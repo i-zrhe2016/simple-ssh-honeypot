@@ -9,7 +9,8 @@ services:
       - "22:2222"   # SSH: host 22 -> container 2222
       - "23:2223"   # Telnet: host 23 -> container 2223 (可选)
     volumes:
-      - ./data/cowrie/var:/cowrie/var   # 持久化日志与下载
+      # Cowrie 实际日志/下载目录在 /cowrie/cowrie-git/var 下
+      - ./data/cowrie/var:/cowrie/cowrie-git/var   # 持久化日志与下载
     # 可按需设置时区：
     # environment:
     #   - TZ=Asia/Shanghai
