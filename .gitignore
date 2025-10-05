@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual env
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Honeypot runtime artifacts
+logs/
+honeypot_host_key
+
+# Docker runtime data
+data/
