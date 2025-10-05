@@ -1,33 +1,37 @@
-# 简易 SSH 蜜罐
+# Cowrie 蜜罐（SSH/Telnet）
 
-基于 Python/Paramiko 的轻量 SSH 蜜罐：记录连接、凭据、exec 命令与交互式输入（JSON 行）。默认监听 `0.0.0.0:22`，首次运行自动生成主机私钥。
+本仓库使用官方镜像 `cowrie/cowrie` 通过 Docker Compose 部署中交互蜜罐（SSH 默认 2222、Telnet 默认 2223）。已将宿主端口映射为：
+- SSH: 宿主 `22` → 容器 `2222`
+- Telnet: 宿主 `23` → 容器 `2223`
 
-## 快速开始
+## 快速开始（Docker）
 
-- 安装依赖：
-  - `pip install -r requirements.txt`
-- 启动（默认 0.0.0.0:22）：
-  - `sudo python3 ssh_honeypot.py`
-- 可选参数：
-  - `--host 0.0.0.0 --port 22 --host-key honeypot_host_key --log-dir logs`
-- 日志文件：
-  - `logs/events.jsonl`（JSON 行）
+1) 启动
+- 确认宿主未占用 22/23（若系统 sshd 占用 22，请先改到其他端口）。
+- `docker compose up -d`
 
-## 本地测试
+2) 测试
+- SSH: `ssh -o StrictHostKeyChecking=no 127.0.0.1`
+- Telnet（可选）: `telnet 127.0.0.1 23`
 
-- SSH 连接（任意凭据都会被接受并记录）：
-  - `ssh -o StrictHostKeyChecking=no test@127.0.0.1`
-- 实时查看日志：
-  - `tail -f logs/events.jsonl`
+3) 日志与下载
+- Cowrie 日志目录（宿主）：`data/cowrie/var/log/cowrie/`
+- 会话文本：`cowrie.log`，JSON：`cowrie.json`，下载样本：`data/cowrie/var/lib/cowrie/downloads/`
+- 查看：`tail -f data/cowrie/var/log/cowrie/cowrie.log`
 
-## Docker（可选）
+## 自定义（可选）
 
-- 构建：`docker compose build`
-- 启动：`docker compose up -d`
-- 日志：`tail -f data/logs/events.jsonl`
-- 如需对外占用 `22` 端口，请先确保宿主机未占用该端口（例如将系统 SSH 改到其他端口）。
+- 如需修改配置，先把默认配置拷贝出来，再挂载到 `/cowrie/etc`：
+  - 复制：`docker cp cowrie:/cowrie/etc ./data/cowrie/etc`
+  - 修改 `./data/cowrie/etc/cowrie.cfg` 后，在 compose 中追加：
+    - `- ./data/cowrie/etc:/cowrie/etc`
+  - 重启：`docker compose restart`
 
-## 注意
+## 说明
 
-- 仅用于安全研究/教学，请在合法合规前提下部署。
-- 建议在容器/隔离环境中以最小权限运行。
+- 仅用于安全研究/教学目的，请遵循当地法律法规并注意隐私合规。
+- 高危：对外开放 22/23 存在被滥用风险，建议在隔离网络/云防火墙下部署，并限制出站流量。
+
+---
+
+附：此前的 Python 简易 SSH 蜜罐（文件 `ssh_honeypot.py`）已弃用，改为 Cowrie 部署方案。

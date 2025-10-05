@@ -1,28 +1,15 @@
 version: "3.8"
 
 services:
-  ssh-honeypot:
-    build: .
-    image: ssh-honeypot:latest
-    container_name: ssh-honeypot
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: cowrie
     restart: unless-stopped
     ports:
-      - "22:22"  # 宿主对外 22 -> 容器 22（请先把宿主 sshd 改到 666）
+      - "22:2222"   # SSH: host 22 -> container 2222
+      - "23:2223"   # Telnet: host 23 -> container 2223 (可选)
     volumes:
-      - ./data:/data
-    command: [
-      "--host", "0.0.0.0",
-      "--port", "22",
-      "--host-key", "/data/host_key",
-      "--log-dir", "/data/logs"
-    ]
-    healthcheck:
-      test: ["CMD", "python3", "-c", "import socket,sys; s=socket.socket(); s.settimeout(1); sys.exit(0 if s.connect_ex(('127.0.0.1',22))==0 else 1)"]
-      interval: 15s
-      timeout: 3s
-      retries: 5
-
-volumes:
-  # 如果不想使用宿主目录，也可以使用命名卷
-  # data:
-  #   driver: local
+      - ./data/cowrie/var:/cowrie/var   # 持久化日志与下载
+    # 可按需设置时区：
+    # environment:
+    #   - TZ=Asia/Shanghai
