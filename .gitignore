@@ -2,20 +2,24 @@
 __pycache__/
 *.py[cod]
 *.pyo
+.pytest_cache/
+.coverage*
 
-# Virtual env
+# Envs & IDE
 .venv/
 venv/
-
-# OS/editor
-.DS_Store
-*.swp
+env/
 .idea/
 .vscode/
 
-# Honeypot runtime artifacts
+# Honeypot runtime data
 logs/
-honeypot_host_key
-
-# Docker runtime data
 data/
+honeypot_host_key
+honeypot_host_key.pub
+*.log
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
