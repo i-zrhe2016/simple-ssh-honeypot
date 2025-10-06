@@ -29,6 +29,16 @@
 - 查看实时 JSON 日志：`tail -f data/cowrie/var/log/cowrie/cowrie.json`
 - 若需要容器标准输出：`docker logs -f cowrie`
 
+## 命令日志解析脚本
+
+- 位置：`scripts/cowrie_cmds.py`（解析 `data/cowrie/var/log/cowrie/cowrie.json` 中的命令事件）
+- 基本用法：
+  - 最近 50 条命令：`python3 scripts/cowrie_cmds.py -n 50`
+  - 带会话/IP 汇总：`python3 scripts/cowrie_cmds.py -n 50 --summary`
+  - 只看某 IP：`python3 scripts/cowrie_cmds.py --ip 1.2.3.4`
+  - 只看失败命令：`python3 scripts/cowrie_cmds.py --only-failed`
+  - 指定日志文件：`python3 scripts/cowrie_cmds.py -f data/cowrie/var/log/cowrie/cowrie.json`
+
 ## 自定义（可选）
 
 - 如需修改配置，先把默认配置拷贝出来，再挂载到 `/cowrie/cowrie-git/etc`：
